@@ -57,7 +57,7 @@ int main()
     //     1, 2, 3    // second triangle
     // };  
 
-    unsigned int fragmentShader;
+    unsigned int fragmentShader, fragment2Shader;
     unsigned int vertexShader;
 
     //vertex shader
@@ -130,6 +130,40 @@ int main()
         }
     }
 
+    file.close();       //close the file, I didn't do this initially and had to debug for a while :(
+
+    //fragment shader 2
+    std::string fragmentShaderSource2;
+    file.open("shaders/fragment2.shader");
+    if(!file.is_open())
+    {
+        std::cout << "Failed to open fragment shader file" << std::endl;
+        return -1;
+    }
+    else 
+    {
+        std::string line;
+        while(std::getline(file, line))
+        {
+            fragmentShaderSource2 += line + "\n";
+        }
+        const char* fragmentShaderSourcePtr2 = fragmentShaderSource2.c_str();
+
+        //std::cout<<fragmentShaderSource;
+
+        
+        fragment2Shader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment2Shader, 1, &fragmentShaderSourcePtr2, NULL);
+        glCompileShader(fragment2Shader);
+
+        glGetShaderiv(fragment2Shader, GL_COMPILE_STATUS, &success);
+        if(!success)
+        {
+            glGetShaderInfoLog(fragment2Shader, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        }
+    }
+
     //shader program
 
     unsigned int shaderProgram;
@@ -151,6 +185,27 @@ int main()
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+
+    //shader program 2
+
+    unsigned int shaderProgram2;
+    shaderProgram2 = glCreateProgram(); 
+    glAttachShader(shaderProgram2, vertexShader);
+    glAttachShader(shaderProgram2, fragment2Shader);
+    glLinkProgram(shaderProgram2);
+
+    glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragment2Shader);
+
+    //check for linking errors
+
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
     
     //vertex array object
     unsigned int VAO[2], VBO[2];
@@ -207,6 +262,7 @@ int main()
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        glUseProgram(shaderProgram2);
         glBindVertexArray(VAO[1]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
