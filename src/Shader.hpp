@@ -85,7 +85,7 @@ Shader::Shader(const char *vertexShaderPath, const char *fragmentShaderPath)
 
     const char* fragmentShaderSourcePtr = fragmentShaderSource.c_str();
 
-    std::cout<<fragmentShaderSource;
+    //std::cout<<fragmentShaderSource;
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSourcePtr, NULL);
@@ -121,17 +121,17 @@ void Shader::use()
 
 void Shader::setBool(const std::string &name, bool value) const
 {
-    glUniform1i(glGetUniformLocation(0, name.c_str()), (int)value);
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 
 void Shader::setInt(const std::string &name, int value) const
 {
-    glUniform1i(glGetUniformLocation(0, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
 void Shader::setFloat(const std::string &name, float value) const
 {
-    glUniform1f(glGetUniformLocation(0, name.c_str()), value);
+    glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
 Shader::~Shader()

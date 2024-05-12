@@ -132,6 +132,9 @@ int main()
 
         //draw triangle
         shader.use();
+        
+        float offset = 0.5f;
+        shader.setFloat("xoffset", offset);
         //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
