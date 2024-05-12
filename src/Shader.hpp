@@ -25,7 +25,7 @@ public:
     unsigned int ID;
     
     Shader(const char *vertexShaderPath, const char *fragmentShaderPath);
-    ~Shader();
+    //~Shader();
     void use(); 
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
@@ -85,7 +85,7 @@ Shader::Shader(const char *vertexShaderPath, const char *fragmentShaderPath)
 
     const char* fragmentShaderSourcePtr = fragmentShaderSource.c_str();
 
-    std::cout<<fragmentShaderSource;
+    //std::cout<<fragmentShaderSource;
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSourcePtr, NULL);
@@ -111,6 +111,9 @@ Shader::Shader(const char *vertexShaderPath, const char *fragmentShaderPath)
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }
 
 void Shader::use()
@@ -132,10 +135,4 @@ void Shader::setInt(const std::string &name, int value) const
 void Shader::setFloat(const std::string &name, float value) const
 {
     glUniform1f(glGetUniformLocation(0, name.c_str()), value);
-}
-
-Shader::~Shader()
-{
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 }
