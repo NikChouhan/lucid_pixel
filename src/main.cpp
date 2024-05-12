@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
+#include <cmath>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -40,13 +41,22 @@ int main()
         return -1;
     }
 
-    //triangle vertices
+    //triangle vertices with colors
 
     float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-    };  
+        // positions         // colors
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+    };       
+
+    //triangle vertices
+
+    // float vertices[] = {
+    // -0.5f, -0.5f, 0.0f,
+    //  0.5f, -0.5f, 0.0f,
+    //  0.0f,  0.5f, 0.0f
+    // };  
 
     // for making a rectangle
 
@@ -178,8 +188,11 @@ int main()
 
     //linking vertex attributes
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     //unbind the EBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -201,8 +214,18 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // double time = glfwGetTime();
+        // std::cout<<time<<std::endl;
+        // float greenValue = (sin(time) / 2.0f) + 0.5f;
+        // float redValue = (cos(time) / 2.0f) + 0.5f;
+        // //float blueValue = (tan(time) / 2.0f) + 0.5f;
+        // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+
+
         //draw triangle
         glUseProgram(shaderProgram);
+        //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
+
         glBindVertexArray(VAO);
 
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
