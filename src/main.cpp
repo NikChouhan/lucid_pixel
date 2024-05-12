@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
+#include "Shader.hpp"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -72,100 +73,7 @@ int main()
     //     1, 2, 3    // second triangle
     // };  
 
-    unsigned int fragmentShader;
-    unsigned int vertexShader;
-
-    //vertex shader
-
-    std::ifstream file;
-
-
-    file.open("shaders/vertex.shader");
-    if(!file.is_open())
-    {
-        std::cout << "Failed to open vertex shader file" << std::endl;
-        return -1;
-    }
-    else 
-    {
-        std::string vertexShaderSource;
-        std::string line;
-        while(std::getline(file, line))
-        {
-            vertexShaderSource += line + "\n";
-        }
-        const char* vertexShaderSourcePtr = vertexShaderSource.c_str();
-
-        //std::cout<<vertexShaderSource;
-
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderSourcePtr, NULL);
-        glCompileShader(vertexShader);
-
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-        if(!success)
-        {
-            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-
-    }
-
-    file.close();       //close the file, I didn't do this initially and had to debug for a while :(
-    //fragment shader
-    
-    std::string fragmentShaderSource;
-    file.open("shaders/fragment.shader");
-    if(!file.is_open())
-    {
-        std::cout << "Failed to open fragment shader file" << std::endl;
-        return -1;
-    }
-    else 
-    {
-        std::string line;
-        while(std::getline(file, line))
-        {
-            fragmentShaderSource += line + "\n";
-        }
-        const char* fragmentShaderSourcePtr = fragmentShaderSource.c_str();
-
-        //std::cout<<fragmentShaderSource;
-
-        
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderSourcePtr, NULL);
-        glCompileShader(fragmentShader);
-
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-        if(!success)
-        {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-        }
-    }
-
-    //shader program
-
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-    //check for linking errors
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-
-
-    //clean up
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader("shaders/vertex.shader", "shaders/fragment.shader");
     
     //vertex array object
     unsigned int VAO, VBO;
@@ -188,7 +96,7 @@ int main()
 
     //linking vertex attributes
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0); 
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
@@ -223,7 +131,7 @@ int main()
 
 
         //draw triangle
-        glUseProgram(shaderProgram);
+        shader.use();
         //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
