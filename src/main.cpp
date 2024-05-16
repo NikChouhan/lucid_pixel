@@ -74,8 +74,8 @@ int main()
     int width, height, nrChannels; 
     unsigned int texture = load_texture("textures/maxresdefault.jpg", &width, &height, &nrChannels);
     
-    int width1, height1, nrChannels1;
-    unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrChannels1);
+    // int width1, height1, nrChannels1;
+    // unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrChannels1);
 
     
 
@@ -156,6 +156,7 @@ int main()
 
         processInput(window);
 
+
         //rendering code
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -190,6 +191,8 @@ int main()
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
         //check and call events and swap the buffers
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
