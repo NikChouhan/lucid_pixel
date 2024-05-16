@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include "Shader.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../includes/stb_image.h"
@@ -156,8 +159,15 @@ int main()
 
     glBindVertexArray(0);
 
-    //render loop
 
+    //matrices transformations
+
+    //
+
+    unsigned int transformLOC = glGetUniformLocation(shader.ID, "transform");
+
+
+    //render loop
 
     while(!glfwWindowShouldClose(window))
     {
@@ -176,9 +186,17 @@ int main()
         // //float blueValue = (tan(time) / 2.0f) + 0.5f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 
+        glm::mat4 trans = glm::mat4(1.0f);
+        //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        
+        float time = glfwGetTime();
+        trans = glm::rotate(trans, time*sin(time), glm::vec3(0.0f, 0.0f, 1.0f));
+        
 
         //draw triangle
         shader.use();
+
+        glUniformMatrix4fv(transformLOC, 1, GL_FALSE, glm::value_ptr(trans));
 
         shader.setInt("texture1", 0);
         //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
