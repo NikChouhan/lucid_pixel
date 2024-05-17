@@ -1,3 +1,4 @@
 #ignore .out files
 *.out
 build/
+lucid_pixel
