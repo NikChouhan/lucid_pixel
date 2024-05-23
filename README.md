@@ -4,9 +4,6 @@ As mentioned, a simple renderer written using OpenGL specification, intended to 
 
 ### Compiling and Running
 ```
-mkdir build
-cmake ../
-make
-cd ..
-./lucid_pixel
+chmod +x run_build.sh
+./run_build.sh
 ```

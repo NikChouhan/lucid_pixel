@@ -52,17 +52,31 @@ int main()
     }
 
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    //coordinate system
 
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
-    ImGui_ImplOpenGL3_Init();
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -10.0f));
+
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
+
+
+
+
+    // Setup Dear ImGui context
+    // IMGUI_CHECKVERSION();
+    // ImGui::CreateContext();
+    // ImGuiIO& io = ImGui::GetIO();
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+
+    // // Setup Platform/Renderer backends
+    // ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    // ImGui_ImplOpenGL3_Init();
 
     //triangle vertices with colors
 
@@ -176,10 +190,13 @@ int main()
         // (Your code calls glfwPollEvents())
 // ...
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow(); // Show demo window! :)
+        // ImGui_ImplOpenGL3_NewFrame();
+        // ImGui_ImplGlfw_NewFrame();
+        // ImGui::NewFrame();
+        // ImGui::ShowDemoWindow(NULL); // Show demo window! :)
+
+        //ImGui::Begin("Hello, world!", NULL, ImGuiWindowFlags_MenuBar);
+
         //rendering code
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -192,15 +209,25 @@ int main()
         // //float blueValue = (tan(time) / 2.0f) + 0.5f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 
-        glm::mat4 trans = glm::mat4(1.0f);
+        //glm::mat4 trans = glm::mat4(1.0f);
         //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
         float time = glfwGetTime();
-        trans = glm::rotate(trans, time*sin(time), glm::vec3(0.0f, 0.0f, 1.0f));
+        //trans = glm::rotate(trans, time, glm::vec3(0.0f, 0.0f, 1.0f));
         //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
         //draw triangle
         shader.use();
 
-        glUniformMatrix4fv(transformLOC, 1, GL_FALSE, glm::value_ptr(trans));
+        int modelLoc = glGetUniformLocation(shader.ID, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        int viewLoc = glGetUniformLocation(shader.ID, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        int projectionLoc = glGetUniformLocation(shader.ID, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+        // glUniformMatrix4fv(transformLOC, 1, GL_FALSE, glm::value_ptr(trans));
 
         shader.setInt("texture1", 0);
         //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
@@ -216,17 +243,19 @@ int main()
         //check and call events and swap the buffers
 
         // Rendering
-// (Your code clears your framebuffer, renders your other stuff etc.)
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // (Your code clears your framebuffer, renders your other stuff etc.)
+        // ImGui::Render();
+        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        //ImGui::End();
         // (Your code calls glfwSwapBuffers() etc.)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    // ImGui_ImplOpenGL3_Shutdown();
+    // ImGui_ImplGlfw_Shutdown();
+    // ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
@@ -237,6 +266,7 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    //std::cerr << "framebuffer_size_callback called" << std::endl; //Test code
 } 
 
 void processInput(GLFWwindow *window)
