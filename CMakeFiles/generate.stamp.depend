@@ -1,0 +1,46 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeDependentOption.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindOpenGL.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindThreads.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-Initialize.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/WindowsPaths.cmake
+C:/dev/Github/lucid_pixel/CMakeFiles/3.30.0-rc1/CMakeCCompiler.cmake
+C:/dev/Github/lucid_pixel/CMakeFiles/3.30.0-rc1/CMakeCXXCompiler.cmake
+C:/dev/Github/lucid_pixel/CMakeFiles/3.30.0-rc1/CMakeRCCompiler.cmake
+C:/dev/Github/lucid_pixel/CMakeFiles/3.30.0-rc1/CMakeSystem.cmake
+C:/dev/Github/lucid_pixel/CMakeLists.txt
+C:/dev/vcpkg/installed/x64-windows/share/glad/gladConfig.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glad/gladConfigVersion.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glad/gladTargets-debug.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glad/gladTargets-release.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glad/gladTargets.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glfw3/glfw3Config.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glfw3/glfw3ConfigVersion.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets-debug.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets-release.cmake
+C:/dev/vcpkg/installed/x64-windows/share/glfw3/glfw3Targets.cmake
+C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
