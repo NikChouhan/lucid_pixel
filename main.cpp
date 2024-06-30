@@ -253,6 +253,7 @@ int main()
     };  
 
     Shader lightingShader("src/shaders/vertex.shader", "src/shaders/fragment.shader");
+    Shader lightCubeShader("src/shaders/lightCube.vertex", "src/shaders/lightCube.fragment");
     
     //vertex array object
     unsigned int VAO, VBO;
@@ -314,6 +315,10 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback); 
 
+
+    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+
     //render loop
 
     while(!glfwWindowShouldClose(window))
@@ -325,17 +330,6 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;  
         processInput(window, deltaTime);
-        
-
-        // (Your code calls glfwPollEvents())
-// ...
-        // Start the Dear ImGui frame
-        // ImGui_ImplOpenGL3_NewFrame();
-        // ImGui_ImplGlfw_NewFrame();
-        // ImGui::NewFrame();
-        // ImGui::ShowDemoWindow(); // Show demo window! :)
-
-        //ImGui::Begin("Hello, world!", NULL, ImGuiWindowFlags_MenuBar);
 
         //rendering code
 
@@ -344,9 +338,6 @@ int main()
 
         // double time = glfwGetTime();
         // std::cout<<time<<std::endl;
-        // float greenValue = (sin(time) / 2.0f) + 0.5f;
-        // float redValue = (cos(time) / 2.0f) + 0.5f;
-        // //float blueValue = (tan(time) / 2.0f) + 0.5f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 
         //glm::mat4 trans = glm::mat4(1.0f);
@@ -355,16 +346,42 @@ int main()
         //trans = glm::rotate(trans, time, glm::vec3(0.0f, 0.0f, 1.0f));
         //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
         //draw triangle
+
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+        glm::mat4 model = glm::mat4(1.f);
+
         lightingShader.use();
 
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor", 1.0f, 1.f, 1.f);
-        //glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
+        lightingShader.setVec3("lightColor", 1.0f, (float)cos(glfwGetTime()), (float)sin(glfwGetTime()));
 
-        
+        lightingShader.setMat4("view", view);
+        lightingShader.setMat4("projection", projection);
+        lightingShader.setMat4("model", model);
 
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glBindVertexArray(0);
+
+        //lightCube options
+
+        lightCubeShader.use();
+
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+
+        lightCubeShader.setMat4("view", view);
+        lightCubeShader.setMat4("projection", projection);
+        lightCubeShader.setMat4("model", model);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //check and call events and swap the buffers
 
@@ -400,7 +417,7 @@ void processInput(GLFWwindow *window, float deltaTime)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = 0.007 * deltaTime; // adjust accordingly
+    float cameraSpeed = 0.0007 * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
