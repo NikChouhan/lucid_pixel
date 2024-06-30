@@ -253,7 +253,7 @@ int main()
     };  
 
     Shader lightingShader("src/shaders/vertex.shader", "src/shaders/fragment.shader");
-    Shader lightCubeShader("src/shaders/lightCube.vertex", "src/shaders/lightCube.fragment");
+    Shader lampShader("src/shaders/lightCube.vertex", "src/shaders/lightCube.fragment");
     
     //vertex array object
     unsigned int VAO, VBO;
@@ -355,10 +355,12 @@ int main()
 
         glm::mat4 model = glm::mat4(1.f);
 
+        float red = (float)sin(glfwGetTime());
+
         lightingShader.use();
 
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor", 1.0f, (float)cos(glfwGetTime()), (float)sin(glfwGetTime()));
+        lightingShader.setVec3("lightColor", red, 1.f, 1.f);
 
         lightingShader.setMat4("view", view);
         lightingShader.setMat4("projection", projection);
@@ -371,14 +373,16 @@ int main()
 
         //lightCube options
 
-        lightCubeShader.use();
+        lampShader.use();
+
+        lampShader.setFloat("red", red);
 
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
 
-        lightCubeShader.setMat4("view", view);
-        lightCubeShader.setMat4("projection", projection);
-        lightCubeShader.setMat4("model", model);
+        lampShader.setMat4("view", view);
+        lampShader.setMat4("projection", projection);
+        lampShader.setMat4("model", model);
 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
