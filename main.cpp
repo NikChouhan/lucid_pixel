@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "includes/load_texture.hpp"
+#include "includes/Camera.hpp"
 
 
 const unsigned int SCR_WIDTH = 800;
@@ -37,6 +38,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main()
 {
+
+    Camera camera(cameraPos, cameraUp, yaw, pitch);
 
     int  success;
     char infoLog[512];
@@ -368,6 +371,7 @@ int main()
         cubeShader.setVec3("objectColor", objectColor);
         cubeShader.setVec3("lightColor",lightColor);
         cubeShader.setVec3("lightPos", lightPos);
+        cubeShader.setVec3("viewPos", cameraPos);
 
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
