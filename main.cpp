@@ -1,6 +1,6 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui_impl_opengl3.h" 
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -325,6 +325,17 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
+    //cube material properties
+    glm::vec3 ambient = { 1.f, 0.5f, 0.31f };
+    glm::vec3 diffuse = { 1.f, 0.5f, 0.31f };
+    glm::vec3 specular = { 0.5f, 0.5f, 0.5f };
+    float shininess = 32.0f;
+
+
+    //Imgui
+
+
+
 
     //render loop
 
@@ -366,10 +377,15 @@ int main()
 
         cubeShader.use();
 
-        glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
         glm::vec3 lightColor = glm::vec3(red, 1.f, 1.f);
-        cubeShader.setVec3("objectColor", objectColor);
+
         cubeShader.setVec3("lightColor",lightColor);
+
+        cubeShader.setVec3("material.ambient", ambient);
+        cubeShader.setVec3("material.diffuse", diffuse);
+        cubeShader.setVec3("material.specular", specular);
+        cubeShader.setFloat("material.shininess", shininess);
+
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", cameraPos);
 
