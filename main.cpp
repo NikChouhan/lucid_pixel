@@ -330,13 +330,14 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-    float red = 0.f;
-    float blue = 0.f;
-    float green = 0.f;
+    float red = 1.f;
+    float blue = 0.5f;
+    float green = 0.31f;
 
 
     //cube material properties
     glm::vec3 ambient = { 1.f, 0.5f, 0.31f };
+    glm::vec3 diffuse = { 1.f, 0.5f, 0.31f };
     glm::vec3 specular = { 0.5f, 0.5f, 0.5f };
     float shininess = 32.0f;
 
@@ -427,9 +428,15 @@ int main()
 
         glm::mat4 model = glm::mat4(1.f);
 
-        glm::vec3 diffuse = { red, blue, green };
+        diffuse = { red, blue, green };
 
         cubeShader.use();
+
+        ImGui::Begin("Material Colors Diffuse Light: ");
+        ImGui::SliderFloat("Red: ", &red, 0.f, 1.f);
+        ImGui::SliderFloat("Blue: ", &blue, 0.f, 1.f);
+        ImGui::SliderFloat("Green: ", &green, 0.f, 1.f);
+        ImGui::End();
 
         glm::vec3 lightColor = glm::vec3(red, blue, green);
 
@@ -459,12 +466,6 @@ int main()
         //lamp options
 
         lampShader.use();
-
-        ImGui::Begin("Colors: ");
-        ImGui::SliderFloat("Red: ", &red, 0.f, 1.f);
-        ImGui::SliderFloat("Blue: ", &blue, 0.f, 1.f);
-        ImGui::SliderFloat("Green: ", &green, 0.f, 1.f);
-        ImGui::End();
 
         lampShader.setFloat("red", red);
         lampShader.setFloat("blue", blue);
