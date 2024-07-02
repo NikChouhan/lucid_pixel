@@ -17,6 +17,11 @@ unsigned int load_texture(const char* texturePath, int* width, int* height, int*
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    GLenum format = GL_RGB;
+
+    if (*nrChannels == 4)
+        format = GL_RGBA;
+
     if (!data)
     {
         std::cout << "Failed to load texture" << std::endl;
