@@ -1,4 +1,5 @@
 #version 330 core
+
 uniform float red;
 out vec4 FragColor;
 

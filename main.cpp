@@ -3,7 +3,9 @@
 #include "imgui_impl_opengl3.h" 
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
+#include <glfw/glfw3.h>
+//#include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -15,13 +17,13 @@
 #include "includes/Camera.hpp"
 
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
-float lastX = 400, lastY = 300;
+double lastX = 400, lastY = 300;
 bool firstMouse = true;
 
 float yaw = -90.0f;
@@ -38,6 +40,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main()
 {
+
+
 
     Camera camera(cameraPos, cameraUp, yaw, pitch);
 
@@ -67,6 +71,8 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+
 
 
     //coordinate system
@@ -339,8 +345,22 @@ int main()
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("version 330");
-    
+
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    ImGui_ImplOpenGL3_Init();
+
+    float lastFrame = 0.0f; // Time of last frame
+
+    //accumulator for FPS update delay
+
+    float fpsUpdate = 0.5f;
+    float accumulator = 0.0f;
+    float displayFPS = 0.0f;
+
+    float red = 0.f;
 
 
     //render loop
@@ -348,14 +368,24 @@ int main()
     while(!glfwWindowShouldClose(window))
     {
         float deltaTime = 0.0f;	// Time between current frame and last frame
-        float lastFrame = 0.0f; // Time of last frame
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;  
         processInput(window, deltaTime);
 
+        accumulator += deltaTime;
+
+        if (accumulator >= fpsUpdate) {
+            // Update the FPS display value
+            displayFPS = 1.f / deltaTime;
+            accumulator = 0.0f; // Reset accumulator
+        }
+
+        float fps = 1.f / deltaTime;
         //rendering code
+
+        glfwPollEvents();
+
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -382,8 +412,6 @@ int main()
         projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
         glm::mat4 model = glm::mat4(1.f);
-
-        float red = (float)sin(glfwGetTime());
 
         cubeShader.use();
 
@@ -412,6 +440,11 @@ int main()
 
         lampShader.use();
 
+        ImGui::Begin("Material");
+        ImGui::SliderFloat("Red value: ", &red, 0.0f, 1.f);
+        ImGui::End();
+
+
         lampShader.setFloat("red", red);
 
         model = glm::translate(model, lightPos);
@@ -425,8 +458,12 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
-        ImGui::Begin("Material");
+        /*ImGui::Begin("Material");
         ImGui::Text("hello");
+        ImGui::End();*/
+
+        ImGui::Begin("FPS");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / displayFPS, displayFPS);
         ImGui::End();
 
         ImGui::Render();
@@ -438,20 +475,27 @@ int main()
         //(Your code clears your framebuffer, renders your other stuff etc.)
         // (Your code calls glfwSwapBuffers() etc.)
         glfwSwapBuffers(window);
-        glfwPollEvents();
+
+        lastFrame = currentFrame;
     }
 
      ImGui_ImplOpenGL3_Shutdown();
      ImGui_ImplGlfw_Shutdown();
+
      ImGui::DestroyContext();
 
+     glDeleteVertexArrays(1, &cubeVAO);
+     glDeleteVertexArrays(1, &lightVAO);
+     glDeleteBuffers(1, &VBO);
+     
+     glfwDestroyWindow(window);
 
-    glfwTerminate();
-    return 0;
+     glfwTerminate();
+     return 0;
 }
 
 
-
+static bool cursorEnabled = true;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -465,7 +509,7 @@ void processInput(GLFWwindow *window, float deltaTime)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = 0.0002 * deltaTime; // adjust accordingly
+    float cameraSpeed =  deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -482,63 +526,59 @@ void processInput(GLFWwindow *window, float deltaTime)
         cameraPos -= cameraSpeed * cameraUp;
 
     // In your processInput function:
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !cursor)
     {
-        //std::cout<<"FuckU GLFW"<<std::endl;   //testing
-        if (!cursor)
+        cursorEnabled = !cursorEnabled;
+        glfwSetInputMode(window, GLFW_CURSOR, cursorEnabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+
+        if (!cursorEnabled) // If we are disabling the cursor, capture the current mouse position
         {
-            if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
-            {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            }
-            else
-            {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            }
-            cursor = true;
+            glfwGetCursorPos(window, &lastX, &lastY);
+            firstMouse = true; // Ensures the camera doesn't jump on the next mouse movement
         }
-        }
+
+        cursor = true;
+    }
     else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
     {
-        //std::cout<<"NoFuckU GLFW"<<std::endl; //testing
         cursor = false;
     }
-    
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-
-    
-    if (firstMouse)
+    if (!cursorEnabled)
     {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
-    }
-  
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; 
-    lastX = xpos;
-    lastY = ypos;
 
-    float sensitivity = 0.06f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+        float sensitivity = 0.06f;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-    yaw   += xoffset;
-    pitch += yoffset;
+        yaw += xoffset;
+        pitch += yoffset;
 
-    if(pitch > 89.0f)
-        pitch = 89.0f;
-    if(pitch < -89.0f)
-        pitch = -89.0f;
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+        if (pitch < -89.0f)
+            pitch = -89.0f;
 
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(direction);
+    }    
 }  
 
 
