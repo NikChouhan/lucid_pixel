@@ -334,7 +334,13 @@ int main()
 
     //Imgui
 
-
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark;
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("version 330");
+    
 
 
     //render loop
@@ -353,6 +359,10 @@ int main()
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         // double time = glfwGetTime();
         // std::cout<<time<<std::endl;
@@ -414,21 +424,28 @@ int main()
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
+
+        ImGui::Begin("Material");
+        ImGui::Text("hello");
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         //check and call events and swap the buffers
 
         // Rendering
         //(Your code clears your framebuffer, renders your other stuff etc.)
-        // ImGui::Render();
-        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         // (Your code calls glfwSwapBuffers() etc.)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    // ImGui_ImplOpenGL3_Shutdown();
-    // ImGui_ImplGlfw_Shutdown();
-    // ImGui::DestroyContext();
+     ImGui_ImplOpenGL3_Shutdown();
+     ImGui_ImplGlfw_Shutdown();
+     ImGui::DestroyContext();
+
+
     glfwTerminate();
     return 0;
 }
