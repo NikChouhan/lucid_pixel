@@ -345,9 +345,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\dev\Github\lucid_pixel\includes\glfw\include\GLFW\glfw3native.h" />
     <ClInclude Include="C:\dev\Github\lucid_pixel\includes\load_texture.hpp" />
     <ClInclude Include="C:\dev\Github\lucid_pixel\includes\stb_image.h" />
-    <ClCompile Include="C:\dev\Github\lucid_pixel\includes\glad\src\glad.c">
-      <ObjectFileName>$(IntDir)/includes/glad/src/glad.c.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="C:\dev\Github\lucid_pixel\includes\glad\src\glad.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\dev\Github\lucid_pixel\ZERO_CHECK.vcxproj">

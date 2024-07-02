@@ -13,7 +13,7 @@ find_package(OpenGL REQUIRED)
 #find_package(glad REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES "src/*.cpp" "includes/*.hpp" "includes/*.h")
-add_executable(lucid_pixel main.cpp ${SRC_FILES} src/glad.c)
+add_executable(lucid_pixel main.cpp ${SRC_FILES})
 
 set_target_properties(lucid_pixel PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${home_DIR})
