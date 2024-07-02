@@ -1,9 +1,12 @@
 #version 330 core
 
 uniform float red;
+uniform float blue;
+uniform float green;
+
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(red,1.f, 1.f, 1.f); // set all 4 vector values to 1.0
+    FragColor = vec4(red, blue, green, 1.f); // set all 4 vector values to 1.0
 }

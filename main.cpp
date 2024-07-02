@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 
 #include <glfw/glfw3.h>
-//#include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -331,11 +330,20 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
+    float red = 0.f;
+    float blue = 0.f;
+    float green = 0.f;
+
+
     //cube material properties
     glm::vec3 ambient = { 1.f, 0.5f, 0.31f };
-    glm::vec3 diffuse = { 1.f, 0.5f, 0.31f };
     glm::vec3 specular = { 0.5f, 0.5f, 0.5f };
     float shininess = 32.0f;
+
+    //light properties
+    glm::vec3 lightAmbient = { 0.2f, 0.2f, 0.2f };
+    glm::vec3 lightDiffuse = { 0.5f, 0.5f, 0.5 };
+    glm::vec3 lightSpecular = { 1.f, 1.f, 1.f };
 
 
     //Imgui
@@ -360,7 +368,13 @@ int main()
     float accumulator = 0.0f;
     float displayFPS = 0.0f;
 
-    float red = 0.f;
+    float ambientF = 0.f;
+    float diffuseF = 0.f;
+    float specularF = 0.f;
+
+    float lightAmbientF = 0.f;
+    float lightDiffuseF = 0.f;
+    float lightSpecularF = 0.f;
 
 
     //render loop
@@ -413,9 +427,11 @@ int main()
 
         glm::mat4 model = glm::mat4(1.f);
 
+        glm::vec3 diffuse = { red, blue, green };
+
         cubeShader.use();
 
-        glm::vec3 lightColor = glm::vec3(red, 1.f, 1.f);
+        glm::vec3 lightColor = glm::vec3(red, blue, green);
 
         cubeShader.setVec3("lightColor",lightColor);
 
@@ -423,6 +439,10 @@ int main()
         cubeShader.setVec3("material.diffuse", diffuse);
         cubeShader.setVec3("material.specular", specular);
         cubeShader.setFloat("material.shininess", shininess);
+
+        cubeShader.setVec3("light.ambient", lightAmbient);
+        cubeShader.setVec3("light.diffuse", lightDiffuse);
+        cubeShader.setVec3("light.specular", lightSpecular);
 
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", cameraPos);
@@ -440,12 +460,17 @@ int main()
 
         lampShader.use();
 
-        ImGui::Begin("Material");
-        ImGui::SliderFloat("Red value: ", &red, 0.0f, 1.f);
+        ImGui::Begin("Colors: ");
+        ImGui::SliderFloat("Red: ", &red, 0.f, 1.f);
+        ImGui::SliderFloat("Blue: ", &blue, 0.f, 1.f);
+        ImGui::SliderFloat("Green: ", &green, 0.f, 1.f);
         ImGui::End();
 
-
         lampShader.setFloat("red", red);
+        lampShader.setFloat("blue", blue);
+        lampShader.setFloat("green", green);
+
+
 
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
