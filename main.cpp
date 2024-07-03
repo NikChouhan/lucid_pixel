@@ -132,8 +132,9 @@ int main()
 
     //load and create a texture
 
-    int width, height, nrChannels; 
-    unsigned int diffuseMap = load_texture("src/textures/container2.jpg", &width, &height, &nrChannels);
+    //int width, height, nrChannels; 
+    unsigned int diffuseMap = load_texture("src/textures/maxresdefault.jpg");
+    unsigned int specularMap = load_texture("src/textures/container2_specular.png");
     
     // int width1, height1, nrChannels1;
     // unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrChannels1);
@@ -251,6 +252,9 @@ int main()
     cubeShader.use();
     cubeShader.setInt("material.diffuse", 0);
 
+    cubeShader.setInt("material.specular", 1);
+
+
     //render loop
 
     while(!glfwWindowShouldClose(window))
@@ -335,6 +339,9 @@ int main()
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
