@@ -4,7 +4,8 @@
 
 #include <glad/glad.h>
 
-#include <glfw/glfw3.h>
+#include "GLFW/glfw3.h"
+
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -16,8 +17,8 @@
 #include "includes/Camera.hpp"
 
 
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
@@ -132,11 +133,13 @@ int main()
 
     //load and create a texture
 
-    int width, height, nrChannels; 
-    unsigned int diffuseMap = load_texture("src/textures/container2.jpg", &width, &height, &nrChannels);
-    
+    //int width, height, nrChannels; 
+    unsigned int diffuseMap = load_texture("src/textures/container2.png");
+    unsigned int specularMap = load_texture("src/textures/container2_specular.png");
+    unsigned int emmisionMap = load_texture("src/textures/matrix.jpg");
+
     // int width1, height1, nrChannels1;
-    // unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrChannels1);
+    // unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrCha nnels1);
 
   
     Shader cubeShader("src/shaders/cube.vertex", "src/shaders/cube.fragment");
@@ -174,7 +177,7 @@ int main()
 
 
     //unbind the EBO
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     //unbind the cubeVAO
 
@@ -251,6 +254,11 @@ int main()
     cubeShader.use();
     cubeShader.setInt("material.diffuse", 0);
 
+    cubeShader.setInt("material.specular", 1);
+    
+    cubeShader.setInt("material.emission", 2);
+
+
     //render loop
 
     while(!glfwWindowShouldClose(window))
@@ -316,15 +324,17 @@ int main()
         //cubeShader.setVec3("lightColor",lightColor);
 
         //cubeShader.setVec3("material.ambient", ambient);
-        cubeShader.setVec3("material.specular", specular);
+        //cubeShader.setVec3("material.specular", specular);
         cubeShader.setFloat("material.shininess", shininess);
 
         //cubeShader.setInt("material.diffuse", 0);
 
-
+        cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("light.ambient", lightAmbient);
         cubeShader.setVec3("light.diffuse", lightDiffuse);
         cubeShader.setVec3("light.specular", lightSpecular);
+
+        cubeShader.setFloat("time", time);
 
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", cameraPos);
@@ -335,6 +345,12 @@ int main()
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, emmisionMap);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -350,7 +366,7 @@ int main()
         lampShader.setFloat("green", green);
 
 
-
+        model = glm::mat4(1.f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
 
