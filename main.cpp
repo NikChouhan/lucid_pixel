@@ -4,7 +4,8 @@
 
 #include <glad/glad.h>
 
-#include <glfw/glfw3.h>
+#include "GLFW/glfw3.h"
+
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -16,8 +17,8 @@
 #include "includes/Camera.hpp"
 
 
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
