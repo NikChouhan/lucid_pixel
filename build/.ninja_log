@@ -9,7 +9,5 @@
 3	1812	1720209036520092931	CMakeFiles/imgui.dir/imgui/imgui_tables.cpp.o	6a392bf6a2030d8e
 3	2801	1720209036520092931	CMakeFiles/imgui.dir/imgui/imgui_widgets.cpp.o	3ef9833e0b617a17
 2	84	1720209154943169767	libimgui.a	4520018214b785b
-5	1934	1720209631188255195	CMakeFiles/lucid_pixel.dir/main.cpp.o	d842b3c6632bfed6
-3	203	1720209707030896528	/home/nikhil/dev/lucid_pixel/lucid_pixel	ff323e0d1e020fc7
 4	1851	1720209768310333676	CMakeFiles/lucid_pixel.dir/main.cpp.o	d842b3c6632bfed6
 1851	2026	1720209770157062926	/home/nikhil/dev/lucid_pixel/lucid_pixel	ff323e0d1e020fc7
