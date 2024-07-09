@@ -309,14 +309,14 @@ int main()
 
         glm::mat4 model = glm::mat4(1.f);
 
-        lightDiffuse = { red, blue, green };
+        lightDiffuse = { red, green, blue };
 
         cubeShader.use();
 
         ImGui::Begin("Material Colors Diffuse Light: ");
         ImGui::SliderFloat("Red: ", &red, 0.f, 1.f);
-        ImGui::SliderFloat("Blue: ", &blue, 0.f, 1.f);
         ImGui::SliderFloat("Green: ", &green, 0.f, 1.f);
+        ImGui::SliderFloat("Blue ", &blue, 0.f, 1.f);
         ImGui::End();
 
         //glm::vec3 lightColor = glm::vec3(red, blue, green);
@@ -362,8 +362,8 @@ int main()
         lampShader.use();
 
         lampShader.setFloat("red", red);
-        lampShader.setFloat("blue", blue);
         lampShader.setFloat("green", green);
+        lampShader.setFloat("blue", blue);
 
 
         model = glm::mat4(1.f);
