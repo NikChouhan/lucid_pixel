@@ -1,4 +1,0 @@
-/home/nikhil/dev/lucid_pixel/build/CMakeFiles/lucid_pixel.dir
-/home/nikhil/dev/lucid_pixel/build/CMakeFiles/imgui.dir
-/home/nikhil/dev/lucid_pixel/build/CMakeFiles/edit_cache.dir
-/home/nikhil/dev/lucid_pixel/build/CMakeFiles/rebuild_cache.dir
