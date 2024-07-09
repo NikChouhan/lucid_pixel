@@ -1,5 +1,5 @@
 #ignore .out files
 *.out
 /build/
-lucid_pixel
+*lucid_pixel
 *.o
