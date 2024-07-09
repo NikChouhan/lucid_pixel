@@ -1,4 +1,5 @@
 #ignore .out files
 *.out
-build/
+/build/
 lucid_pixel
+*.o
