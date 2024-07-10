@@ -222,9 +222,14 @@ glm::vec3 cubePositions[] = {
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-    float red = 1.f;
-    float blue = 0.5f;
-    float green = 0.31f;
+    float red = 0.f;
+    float blue = 1.f;
+    float green = 0.2f;
+
+    //light intensity
+
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 
 
     //cube material properties
@@ -281,7 +286,7 @@ glm::vec3 cubePositions[] = {
     {
         float deltaTime = 0.0f;	// Time between current frame and last frame
 
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         processInput(window, deltaTime);
 
@@ -356,14 +361,23 @@ glm::vec3 cubePositions[] = {
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", cameraPos);
 
+        cubeShader.setFloat("light.constant", 1.0f);
+        cubeShader.setFloat("light.linear", linear);
+        cubeShader.setFloat("light.quadratic", quadratic);
+
+        ImGui::Begin("Intensity");
+        ImGui::SliderFloat("linear ", &linear, 0.f, 1.f);
+        ImGui::SliderFloat("quadratic ", &quadratic, 0.f, 1.f);
+        ImGui::End();
+
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("model", model);
 
         ImGui::Begin("Light Direction");
-        ImGui::SliderFloat("x: ", &lightDirection.x, 0.f, 1000);
-        ImGui::SliderFloat("y: ", &lightDirection.y, 0.f, 1000);
-        ImGui::SliderFloat("z: ", &lightDirection.z, 0.f, 1000);
+        ImGui::SliderFloat("x: ", &lightPos.x, 0.f, 10);
+        ImGui::SliderFloat("y: ", &lightPos.y, 0.f, 10);
+        ImGui::SliderFloat("z: ", &lightPos.z, 0.f, 10);
         ImGui::End();
 
         glActiveTexture(GL_TEXTURE0);
