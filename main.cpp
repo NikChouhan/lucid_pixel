@@ -130,6 +130,20 @@ int main()
 
 
 
+glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
+
 
     //load and create a texture
 
@@ -208,9 +222,14 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-    float red = 1.f;
-    float blue = 0.5f;
-    float green = 0.31f;
+    float red = 0.f;
+    float blue = 1.f;
+    float green = 0.2f;
+
+    //light intensity
+
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 
 
     //cube material properties
@@ -228,6 +247,8 @@ int main()
     //glm::vec3 lightSpecular = { red, blue, green };
 
 
+    glm::vec3 lightDirection = {-0.2f, -1.0f, -0.3f};
+    
     //Imgui
 
     IMGUI_CHECKVERSION();
@@ -265,7 +286,7 @@ int main()
     {
         float deltaTime = 0.0f;	// Time between current frame and last frame
 
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         processInput(window, deltaTime);
 
@@ -329,7 +350,8 @@ int main()
 
         //cubeShader.setInt("material.diffuse", 0);
 
-        cubeShader.setVec3("light.position", lightPos);
+        //cubeShader.setVec3("light.position", lightPos);
+        cubeShader.setVec3("light.direction", lightDirection);
         cubeShader.setVec3("light.ambient", lightAmbient);
         cubeShader.setVec3("light.diffuse", lightDiffuse);
         cubeShader.setVec3("light.specular", lightSpecular);
@@ -339,9 +361,29 @@ int main()
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", cameraPos);
 
+        cubeShader.setFloat("light.constant", 1.0f);
+        cubeShader.setFloat("light.linear", linear);
+        cubeShader.setFloat("light.quadratic", quadratic);
+
+        cubeShader.setVec3("light.position", cameraPos);
+        cubeShader.setVec3("light.direction", cameraFront);
+        cubeShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+        cubeShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+
+        ImGui::Begin("Intensity");
+        ImGui::SliderFloat("linear ", &linear, 0.f, 1.f);
+        ImGui::SliderFloat("quadratic ", &quadratic, 0.f, 1.f);
+        ImGui::End();
+
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("model", model);
+
+        ImGui::Begin("Light Direction");
+        ImGui::SliderFloat("x: ", &lightPos.x, 0.f, 10);
+        ImGui::SliderFloat("y: ", &lightPos.y, 0.f, 10);
+        ImGui::SliderFloat("z: ", &lightPos.z, 0.f, 10);
+        ImGui::End();
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -353,7 +395,18 @@ int main()
         glBindTexture(GL_TEXTURE_2D, emmisionMap);
 
         glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        for(unsigned int i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            cubeShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glBindVertexArray(0);
 
@@ -429,7 +482,7 @@ void processInput(GLFWwindow *window, float deltaTime)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed =  deltaTime; // adjust accordingly
+    float cameraSpeed =  2*deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
