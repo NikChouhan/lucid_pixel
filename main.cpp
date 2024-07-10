@@ -365,6 +365,11 @@ glm::vec3 cubePositions[] = {
         cubeShader.setFloat("light.linear", linear);
         cubeShader.setFloat("light.quadratic", quadratic);
 
+        cubeShader.setVec3("light.position", cameraPos);
+        cubeShader.setVec3("light.direction", cameraFront);
+        cubeShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+        cubeShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+
         ImGui::Begin("Intensity");
         ImGui::SliderFloat("linear ", &linear, 0.f, 1.f);
         ImGui::SliderFloat("quadratic ", &quadratic, 0.f, 1.f);
