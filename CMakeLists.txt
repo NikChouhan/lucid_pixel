@@ -5,7 +5,7 @@ set(glad_DIR "/usr/include/glad")
 
 set(home_DIR ${CMAKE_CURRENT_SOURCE_DIR}/)
 
-project(lucid_pixel) 
+project(lucid_pixel)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)

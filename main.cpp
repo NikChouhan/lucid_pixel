@@ -1,12 +1,11 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h" 
+#include "imgui_impl_opengl3.h"
 
 #include <glad/glad.h>
 
 #include "GLFW/glfw3.h"
 
-#include <fstream>
 #include <iostream>
 #include <cmath>
 #include "includes/Shader.hpp"
@@ -147,7 +146,7 @@ glm::vec3 cubePositions[] = {
 
     //load and create a texture
 
-    //int width, height, nrChannels; 
+    //int width, height, nrChannels;
     unsigned int diffuseMap = load_texture("src/textures/container2.png");
     unsigned int specularMap = load_texture("src/textures/container2_specular.png");
     unsigned int emmisionMap = load_texture("src/textures/matrix.jpg");
@@ -155,10 +154,10 @@ glm::vec3 cubePositions[] = {
     // int width1, height1, nrChannels1;
     // unsigned int texture1 = load_texture("textures/cat.png", &width1, &height1, &nrCha nnels1);
 
-  
+
     Shader cubeShader("src/shaders/cube.vertex", "src/shaders/cube.fragment");
     Shader lampShader("src/shaders/lamp.vertex", "src/shaders/lamp.fragment");
-    
+
     //vertex array object
     unsigned int cubeVAO, VBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -169,8 +168,8 @@ glm::vec3 cubePositions[] = {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    
-    //generate and bind EBO 
+
+    //generate and bind EBO
     // unsigned int EBO;
     // glGenBuffers(1, &EBO);
 
@@ -180,7 +179,7 @@ glm::vec3 cubePositions[] = {
 
     //linking vertex attributes
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0); 
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
@@ -213,11 +212,11 @@ glm::vec3 cubePositions[] = {
 
     //unsigned int transformLOC = glGetUniformLocation(shader.ID, "transform");
 
-    glEnable(GL_DEPTH_TEST);  
+    glEnable(GL_DEPTH_TEST);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback); 
+    glfwSetScrollCallback(window, scroll_callback);
 
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -248,7 +247,7 @@ glm::vec3 cubePositions[] = {
 
 
     glm::vec3 lightDirection = {-0.2f, -1.0f, -0.3f};
-    
+
     //Imgui
 
     IMGUI_CHECKVERSION();
@@ -276,7 +275,7 @@ glm::vec3 cubePositions[] = {
     cubeShader.setInt("material.diffuse", 0);
 
     cubeShader.setInt("material.specular", 1);
-    
+
     cubeShader.setInt("material.emission", 2);
 
 
@@ -460,7 +459,7 @@ glm::vec3 cubePositions[] = {
      glDeleteVertexArrays(1, &cubeVAO);
      glDeleteVertexArrays(1, &lightVAO);
      glDeleteBuffers(1, &VBO);
-     
+
      glfwDestroyWindow(window);
 
      glfwTerminate();
@@ -474,7 +473,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
     //std::cerr << "framebuffer_size_callback called" << std::endl; //Test code
-} 
+}
 
 void processInput(GLFWwindow *window, float deltaTime)
 {
@@ -494,7 +493,7 @@ void processInput(GLFWwindow *window, float deltaTime)
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraUp;
-    
+
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         cameraPos -= cameraSpeed * cameraUp;
 
@@ -551,8 +550,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         direction.y = sin(glm::radians(pitch));
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
         cameraFront = glm::normalize(direction);
-    }    
-}  
+    }
+}
 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -561,5 +560,5 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     if (fov < 1.0f)
         fov = 1.0f;
     if (fov > 45.0f)
-        fov = 45.0f; 
+        fov = 45.0f;
 }
