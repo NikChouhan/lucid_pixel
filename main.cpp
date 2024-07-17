@@ -1,3 +1,7 @@
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include <glad/glad.h>
 
 #include "GLFW/glfw3.h"
@@ -33,10 +37,17 @@ bool cursor = false;
 
 float fov = 45.0f;
 
+bool isModelVisible = true; // Default to true to show the model initially
+
+Model* loadedModel = nullptr; // Pointer to dynamically manage the model's lifetime
+
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, float deltaTime);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void renderModelLoadingWindow(Shader &shader);
 
 int main()
 {
@@ -88,6 +99,14 @@ int main()
 
     float lastFrame = 0.f;
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
 
     //render loop
 
@@ -116,24 +135,18 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        modShad.use();
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-        
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        renderModelLoadingWindow(modShad);
 
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        ImGui::Begin("FPS Display");
+        ImGui::Text("FPS: %.1f", fps);
+        ImGui::End();
 
-        glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-
-        modShad.setMat4("projection", projection);
-        modShad.setMat4("view", view);
-        modShad.setMat4("model", model);
-
-        ourModel.Draw(modShad);
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
         //check and call events and swap the buffers
@@ -146,6 +159,11 @@ int main()
         lastFrame = currentFrame;
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    delete loadedModel;
 
      glfwDestroyWindow(window);
 
@@ -253,3 +271,39 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 
 
+// Global or member variable
+
+void renderModelLoadingWindow(Shader &modShad) {
+    static char modelPath[128] = ""; // Buffer for model path input
+
+    ImGui::Begin("Model Loader"); // Begin ImGui window
+
+    ImGui::InputText("Model Path", modelPath, IM_ARRAYSIZE(modelPath)); // Input for model path
+
+    if (ImGui::Button("Load Model") && modelPath[0] != '\0') {
+        // Load the model only if not already loaded and path is not empty
+        delete loadedModel; // Delete the existing model if any
+        loadedModel = new Model(modelPath); // Dynamically allocate new model
+    }
+
+    ImGui::End(); // End ImGui window
+
+    if (loadedModel) {
+        modShad.use();
+        
+        // Setup matrices
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 model = glm::mat4(1.f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        // Set shader uniforms
+        modShad.setMat4("projection", projection);
+        modShad.setMat4("view", view);
+        modShad.setMat4("model", model);
+
+        // Draw the model
+        loadedModel->Draw(modShad);
+    }
+}
