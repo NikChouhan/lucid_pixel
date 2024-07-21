@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "*.vertex": "shaderlab",
+        "*.fragment": "shaderlab",
         "*.glsl": "glsl",
         "array": "cpp",
         "atomic": "cpp",
@@ -65,7 +67,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "*.inc": "cpp"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": false
 }
